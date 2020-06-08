@@ -1,7 +1,8 @@
 
 # Concept Figure
 
-function Figure_1(;rg_seed::Int64=5517)
+function Figure_1(;rg_seed=5517)
+seed!=nothing ? Random.seed!(seed) : nothing
 S=ConceptExample()
 figure_size=(2.2,2)
 N0=5
@@ -62,38 +63,9 @@ return (t_ssa,Mom_ssa,Var_ssa), (t_ode,Mom_ode)
 end
 
 
-function BirthDeath_figure_expected_distribution(;x::Vector{Int64}=collect(0:1:150),
-												kb=1.,kd=0.1,kI=1.,kE=0.01,lambda=10.)
-L=length(x)
-S = BirthDeath()
-S.c[1].k = kb
-S.c[2].k = kd
-S.c[3].k = kI
-S.c[4].k = kE
-S.c[3].parameters = lambda
-intake_distribution = Poisson(lambda)
-b = kI*pdf.(intake_distribution,x)
-A=zeros(L,L)
-for i=1:L A[i,i] = -(kb + kd*x[i] + kE) end
-for i=1:L-1 A[i,i+1] = kd*(x[i]+1) end
-for i=2:L A[i,i-1] = kb end
-nn = -A \ b
-figure("Expected distribution")
-#plot(x,nn,label=L"k_b="*"$kb")
-plot(x,nn,label=L"\beta="*"$(lambda/(kb/kd))")
-xlabel(L"x",size=16); # xlim([-5;50])
-ylabel(L"\langle n(x) \rangle",rotation=0,size=16,labelpad=25);  #ylim([0.7,12])
-subplots_adjust(top=0.88,bottom=0.11,left=0.2,right=0.95,hspace=0.2,wspace=0.2)
-#title("Variance-to-mean ratio of compartment content at steady-state",size=12)
-#legend()
-return x, nn
-end
-
-
-
 function Figure_S1(;lambdas=[1.;10.;50.])
 n0 = rand(0:0,1,1)
-n0fix = zeros(Int64,1,100)#; n0fix[1]=1
+n0fix = zeros(Int64,1,100)
 count=0
 figure(figsize=(14,5))
 for lambda in lambdas
@@ -192,7 +164,6 @@ end
 
 function Figure_3C(;
     time_interval = [0.;200.],
-    #Comm_rates=[0.00001;0.00002;0.00005;0.0001;0.0002;0.0005;0.001;0.002;0.005;0.01;0.02;0.05;0.1;0.2;0.5;1.],
     Comm_rates=10.0 .^ collect(-5:0.01:1),
     seed::Union{Nothing,Int64}=nothing)
 seed!=nothing ? Random.seed!(seed) : nothing
@@ -220,21 +191,13 @@ yticks([0,20,40,60,80,100])
 ax=gca()
 ax2 = ax.twinx() # Create another axis on top of the current axis
 setp(ax.get_yticklabels(),color="xkcd:royal blue") # Y Axis font formatting
-plot(Comm_rescaled, stdMGs.^2 ./ MGs, "-.", lw=1.0, color="k")#, label=L"\frac{\sigma^2}{\mu}")
-#ylabel(L"\frac{\sigma^2}{\mu}",size=16, color="xkcd:royal blue",rotation=0,labelpad=10)
+plot(Comm_rescaled, stdMGs.^2 ./ MGs, "-.", lw=1.0, color="k")
 yticks([0,0.25,0.5,0.75,1.,1.25,1.5]); #legend(loc="center right",fontsize=16)
 subplots_adjust(top=0.9,bottom=0.11,left=0.11,right=0.9,hspace=0.2,wspace=0.2)
 # protein mass
 figure(); xscale("log"); #xlabel(L"\frac{k_{com} N_0}{k_d^G}",size=14); title("Expected steady-state protein mass",size=14)
-#fill_between(Comm_rescaled, MPs .- stdMPs, MPs .+ stdMPs,alpha=0.5,color="xkcd:sky blue")
-#plot(Comm_rescaled, MPs, color="xkcd:royal blue")
-#yticks([0,500,1000,1500,2000]); ; ylim([-100,2100])
 ax=gca()
-#ax2 = ax.twinx() # Create another axis on top of the current axis
-#setp(ax.get_yticklabels(),color="xkcd:royal blue") # Y Axis font formatting
-#plot(Comm_rescaled, stdMPs.^2 ./ MPs, "-.", lw=1.0, color="k")#, label=L"\frac{\sigma^2}{\mu}")
 plot(Comm_rescaled, stdMPs.^2 ./ MPs, "-", lw=1.0, color="k")#, label=L"\frac{\sigma^2}{\mu}")
-#ylabel(L"\frac{\sigma^2}{\mu}",size=16, color="xkcd:royal blue",rotation=0,labelpad=10)
 xlim([0.01,2500])
 yticks([0,1,5,10,15]); #legend(loc="center right",fontsize=16)
 subplots_adjust(top=0.9,bottom=0.11,left=0.11,right=0.9,hspace=0.2,wspace=0.2)
@@ -292,8 +255,6 @@ end
 
 
 # Figures for "Stem Cell Population Dynamics"
-
-
 
 function Figure_3E(; tmax::Float64=20.,
                            seed::Union{Nothing,Int64}=nothing) # 98455 81171 60795 11091
@@ -431,29 +392,15 @@ t_ssa = collect(0.:50:1000)
 n0 = ones(Int64,2,1)
 LL=length(theta)
 Nstem=zeros(LL); Sstem=zeros(LL); Ntot=zeros(LL); Stot=zeros(LL)
-#figure(1)
 for i=1:LL
 	S.c[3].k = KF/(1+theta[i])
 	S.c[4].k = theta[i]*S.c[3].k
     t_ode,Mom_ode=solve_moment_equations(S,n0,(t_ssa[1],t_ssa[end]),Tpoints=1001)
-    #plot(t_ode,Mom_ode[1,:],color="b")
-    #plot(t_ode,Mom_ode[2,:],color="orange")
     Ntot[i]=Mom_ode[1,end]
     Stot[i]=sqrt.(Mom_ode[5,end].-Mom_ode[1,end].^2)
     Nstem[i]=Mom_ode[2,end]
     Sstem[i]=sqrt.(Mom_ode[6,end].-Mom_ode[2,end].^2)
 end
-#=
-figure(2)
-plot(theta, Ntot, color="blue", "D-")
-fill_between(theta,Ntot .- Stot, Ntot .+ Stot,alpha=0.6,color="xkcd:sky blue",label="All cells - ODEs")
-plot(theta, Nstem, color="red", "D-")
-fill_between(theta, Nstem .- Sstem, Nstem .+ Sstem,alpha=0.6,color="xkcd:orange",label="Stem cells - ODEs")
-legend(); xlabel(L"\theta",size=12)
-figure(3); title("Stem cell fraction")
-plot(theta, Nstem ./ Ntot, "D-")
-xlabel(L"\theta",size=12); ylim([0,0.5])
-=#
 return Ntot, Stot, Nstem, Sstem
 end
 
@@ -472,28 +419,14 @@ t_ssa = collect(0.:50:1000)
 n0 = ones(Int64,2,1)
 LL=length(ks)
 Nstem=zeros(LL); Sstem=zeros(LL); Ntot=zeros(LL); Stot=zeros(LL)
-#figure(1)
 for i=1:LL
     S.c[2].k = ks[i]
     t_ode,Mom_ode=solve_moment_equations(S,n0,(t_ssa[1],t_ssa[end]),Tpoints=1001)
-    #plot(t_ode,Mom_ode[1,:],color="b")
-    #plot(t_ode,Mom_ode[2,:],color="b")
     Ntot[i]=Mom_ode[1,end]
     Stot[i]=sqrt.(Mom_ode[5,end].-Mom_ode[1,end].^2)
     Nstem[i]=Mom_ode[2,end]
     Sstem[i]=sqrt.(Mom_ode[6,end].-Mom_ode[2,end].^2)
 end
-#=
-figure(2)
-plot(ks, Ntot, color="blue","D-")
-fill_between(ks, Ntot .- Stot, Ntot .+ Stot,alpha=0.6,color="xkcd:sky blue",label="All cells - ODEs")
-plot(ks, Nstem, color="red","D-")
-fill_between(ks, Nstem .- Sstem, Nstem .+ Sstem,alpha=0.6,color="xkcd:orange",label="Stem cells - ODEs")
-legend(); xlabel(L"k_S",size=12)
-figure(3); title("Stem cell fraction")
-plot(ks, Nstem ./ Ntot, "D-")
-xlabel(L"k_S",size=12); ylim([0,0.5])
-=#
 return Ntot, Stot, Nstem, Sstem
 end
 
@@ -512,38 +445,21 @@ t_ssa = collect(0.:50:1000)
 n0 = ones(Int64,2,1)
 LL=length(knf)
 Nstem=zeros(LL); Sstem=zeros(LL); Ntot=zeros(LL); Stot=zeros(LL)
-#figure(1)
 for i=1:LL
     S.c[1].k = knf[i]
     t_ode,Mom_ode=solve_moment_equations(S,n0,(t_ssa[1],t_ssa[end]),Tpoints=1001)
-    #plot(t_ode,Mom_ode[1,:],color="b")
-    #plot(t_ode,Mom_ode[2,:],color="b")
     Ntot[i]=Mom_ode[1,end]
     Stot[i]=sqrt.(Mom_ode[5,end].-Mom_ode[1,end].^2)
     Nstem[i]=Mom_ode[2,end]
     Sstem[i]=sqrt.(Mom_ode[6,end].-Mom_ode[2,end].^2)
 end
-#=
-figure(2)
-plot(knf, Ntot, color="blue", "D-")
-fill_between(knf,Ntot .- Stot, Ntot .+ Stot,alpha=0.6,color="xkcd:sky blue",label="All cells - ODEs")
-plot(knf, Nstem, color="red","D-")
-fill_between(knf, Nstem .- Sstem, Nstem .+ Sstem,alpha=0.6,color="xkcd:orange",label="Stem cells - ODEs")
-legend(); ax=gca(); ax.set_xscale("log"); ax.set_yscale("log")
-xlabel(L"k_{nf}",size=12)
-figure(3); title("Stem cell fraction")
-plot(knf, Nstem ./ Ntot, "D-")
-ax=gca(); ax.set_xscale("log"); ylim([0,0.5])
-xlabel(L"k_{nf}",size=12)
-=#
 return Ntot, Stot, Nstem, Sstem
 end
 
 
 
-function StemCells_figure_waitingtime(; kb=10.,kF=0.01,t=collect(0:0.1:15),Nsamples=1000000,seed::Union{Nothing,Int64}=nothing)
+function Figure_S3(; kb=10.,kF=0.01,t=collect(0:0.1:15),Nsamples=1000000,seed::Union{Nothing,Int64}=nothing)
 seed!=nothing ? Random.seed!(seed) : nothing
-#plot(t,kf*kb*t .* exp.(-kf*kb*t.^2 / 2),color="k","--")
 taus=zeros(Nsamples)
 for i=1:Nsamples
 	time=0.
@@ -571,23 +487,3 @@ ylabel(L"p(\tau)",rotation=0,size=16,labelpad=25)
 title("Inter-division-time distribution",size=16)
 return
 end
-
-#=
-
-function StemCells_figure_waitingtime_random(; kb=10.,kF=0.01,t=collect(0:0.1:20),Nsamples=10,seed::Union{Nothing,Int64}=nothing)
-seed!=nothing ? Random.seed!(seed) : nothing
-for i=1:Nsamples
-	x_end=rand(Poisson(kb*t[end]))
-	ts=sort(t[end]*rand(x_end))
-	xs=collect(0:1:x_end)
-	tplot=[0;ts] #sort([0;ts;ts;t[end]]); println(length(tplot))
-	xplot= xs #sort([xs;xs])
-	p = kF*xplot .* exp.(-kF*cumsum(xplot .* [0;tplot[2:end] .- tplot[1:end-1]]))
-	println(length(p))
-	plot(tplot,p,drawstyle="steps-post",alpha=0.3,color="b",lw=1.)
-end
-plot(t,kF*kb*t .* exp.(-kF*kb*t.^2 / 2),color="k","--")
-return
-end
-
-=#
