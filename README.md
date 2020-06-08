@@ -21,16 +21,18 @@ using .StochasticCompartments
 ```
 The following functions are dedicated to reproduce the corresponding figures of the paper: 
 ```julia
-figure_1()                         # for figure 1
-figure_birthdeath()                # for figures 2B and 2C
-figure_SI1()                       # for figure S.1
-figure_coagulationfragmentation()  # for figures 2E, 2F and S.2
-figure_cellcommunication()         # for figures 3B and S.3
-figure_cellactivation()            # for figure 3C
-figure_stemcellstart()             # for figure 3E
-figure_stemcelldynamics()          # for figure 3F
-figure_stemcellparameters()        # for figures 3G and S.4
-figure_stemcellperturbation()      # for figure 3H
+Figure_1()                         # for the panels of the concept figure (Fig. 1)
+Figure_2BC()                       # for figures 2B and 2C (nested birth-death model)
+Figure_S1()                        # for figure S.1
+Figure_2EF()                       # for figures 2E, 2F and S.2 (coagulation-fragmentation case study)
+Figure_3B()                        # for figures 3B and S.3 (dynamics of the protein expression)
+Figure_3C()                        # for Fig. 3C  (variance-to-mean ratio of protein distribution)
+Figure_3C_inset()                  # for the inset of Fig. 3C (steady-state protein distributions)
+Figure_3E()                        # for Fig. 3E (stem cell lineage realization)
+Figure_S3()                        # for Fig. S3 (division time distribution)
+figure_3F()                        # for Fig. 3F (stem cell moment dynamics)
+figure_3G()                        # for figures 3G and S.4 (stem cell steady state)
+figure_3H()                        # for figure 3H (stem cell perturbation)
 ```
 Note that some of figures show the output of single stochastic realizations, but the random number generator is reset always to the same condition to ensure perfect reproducibility. In order to obtain different random realizations, it is sufficient to pass the keyword `seed = nothing`, for instance `figure_stemcellperturbation(seed=nothing)` .
 
