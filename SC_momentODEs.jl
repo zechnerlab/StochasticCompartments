@@ -26,11 +26,11 @@ end
 # Moment Equations for "Nested Birth-Death Process"
 
 function birth_death_ODEs(dM::Vector{Float64},M::Vector{Float64},S::System,t::Float64)
-kb = S.transition_classes[1].k
-kd = S.transition_classes[2].k
-kB = S.transition_classes[3].k
-lambda = S.transition_classes[3].parameters
-kE = S.transition_classes[4].k
+kb = S.c[1].k
+kd = S.c[2].k
+kB = S.c[3].k
+lambda = S.c[3].parameters
+kE = S.c[4].k
 # N (Number of Compartments)
 dM[1]= kB -kE*M[1]
 # M (Total Mass)
@@ -61,11 +61,11 @@ end
 # Moment Equations for "Stochastic Coagulation-Fragmentation Dynamics"
 
 function coagulation_fragmentation_ODEs(dM::Vector{Float64},M::Vector{Float64},S::System,t::Float64)
-kC = S.transition_classes[1].k
-kF = S.transition_classes[2].k
-kI = S.transition_classes[3].k
-lambda = S.transition_classes[3].parameters
-kE = S.transition_classes[4].k
+kC = S.c[1].k
+kF = S.c[2].k
+kI = S.c[3].k
+lambda = S.c[3].parameters
+kE = S.c[4].k
 ## Moments to close
 XXX = 2*M[3]^2/M[2]-M[2]*M[3]/M[1] # Gamma for <X^3> ## 3*M[3]*M[2]/M[1] - 2*M[2]^3/M[1]^2 # M[1]*(M[3]/M[2])^3
 N3 = 2*M[4]^2/M[1]-M[1]*M[4]  # Gamma for <N^3>
@@ -100,12 +100,12 @@ end
 # Moment Equations for "Transciption dynamics in a cell community"
 
 function cell_community_ODEs(dM::Vector{Float64},M::Vector{Float64},S::System,t::Float64)
-kcom = S.transition_classes[1].k
-kbG = S.transition_classes[2].k
-kdG = S.transition_classes[3].k
-kS = S.transition_classes[4].k
-kbS = S.transition_classes[5].k
-kdS = S.transition_classes[6].k
+kcom = S.c[1].k
+kbG = S.c[2].k
+kdG = S.c[3].k
+kS = S.c[4].k
+kbS = S.c[5].k
+kdS = S.c[6].k
 ## Moments to close
 MG3 = 2*M[4]^2/M[2]-M[2]*M[4]    #  Gamma <MG^3>
 MG2MP = 2*M[4]*M[6]/M[2]-M[4]*M[3]  #  Gamma for <MG^2*MP>
@@ -141,11 +141,11 @@ end
 # Moment Equations for "Stem Cell Population Dynamics"
 
 function stemcells_ODEs(dM::Vector{Float64},M::Vector{Float64},S::System,t::Float64)
-knf = S.transition_classes[1].k 
-kS = S.transition_classes[2].k
-kF_asym = S.transition_classes[3].k
-kF_sym  = S.transition_classes[4].k
-kE = S.transition_classes[5].k
+knf = S.c[1].k
+kS = S.c[2].k
+kF_asym = S.c[3].k
+kF_sym  = S.c[4].k
+kE = S.c[5].k
 ## Moments to close
 GPPP = 2*M[4]^2/M[3]-M[3]*M[4]/M[2] # Gamma
 NMG = M[1]*M[2]     # MF
@@ -166,46 +166,6 @@ dM[5]=  (kF_asym+kF_sym)*(M[3]+2*NMGP) +kE*(M[1]-M[2]-2*(M[5]-NMG))
 # M_G^2
 dM[6]= kF_sym*(M[3]+2*MGMGP) +knf/2*(M[6]-M[2]) -knf*(MG3-M[6])
 return
-end
-
-
-
-function stemcells_ODEs_perturbation(dM::Vector{Float64},M::Vector{Float64},S::System,t::Float64)
-knf = S.transition_classes[1].k * Perturbation(t)
-kS = S.transition_classes[2].k
-kF_asym = S.transition_classes[3].k
-kF_sym  = S.transition_classes[4].k
-kE = S.transition_classes[5].k
-## Moments to close
-GPPP = 2*M[4]^2/M[3]-M[3]*M[4]/M[2] # Gamma
-NMG = M[1]*M[2]     # MF
-NMGP = M[1]*M[3]    # MF
-MGMGP = M[2]*M[3]   # MF
-MGMGPP = M[2]*M[4]  # MF
-MG3 = 2*M[6]^2/M[2]-M[2]*M[6]    # Gamma
-# N (Number of Compartments)
-dM[1]= (kF_asym+kF_sym)*M[3] -kE*(M[1]-M[2])
-# M_G
-dM[2]= kF_sym*M[3] -knf/2*(M[6]-M[2])
-# M_GP
-dM[3]= -(kF_asym+kF_sym)*M[4] +kS*M[2] -knf/2*(MGMGP-M[3])
-# M_GPP
-dM[4]= -(kF_asym+kF_sym)*GPPP +kS*(M[2]+2*M[3]) -knf/2*(MGMGPP-M[4])
-# N^2
-dM[5]=  (kF_asym+kF_sym)*(M[3]+2*NMGP) +kE*(M[1]-M[2]-2*(M[5]-NMG))
-# M_G^2
-dM[6]= kF_sym*(M[3]+2*MGMGP) +knf/2*(M[6]-M[2]) -knf*(MG3-M[6])
-return
-end
-
-
-
-function Perturbation(t; tp::Float64=200.0,param::Float64=0.2)
-    if t<=tp
-        return 1.0
-    else
-        return param
-    end
 end
 
 function stemcells_initial(n0::Matrix{Int64}) :: Vector{Float64}

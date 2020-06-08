@@ -1,8 +1,16 @@
+# functions defining model of each case study
 
-# Model for Concept Figure
-function ConceptFigure()
-    S=System("ConceptFigure",2,Dict(1=>[0,0],2=>[1,0],3=>[2,0]))
-    kC, kr = 0.01, 0.2
+function ConceptExample()
+    S=System("ConceptExample",2,Dict(1=>[0,0],2=>[1,0],3=>[0,1],4=>[2,0]))
+    kI, lambda, kC, kr, kd = 1.0, 10.0, 0.01, 0.1, 0.1
+
+    intake=TransitionClass(0,1,kI)
+    intake.H = (n::Matrix{Int64},Mom::Vector{Int64}) -> 1
+    intake.pi = function(yc::Vector{Vector{Int64}}, xc::Vector{Vector{Int64}}, param::Float64)
+                        yc[1][1]=rand(Poisson(param))
+                        yc[1][2]=0
+                end
+    intake.parameters = lambda
 
     coag=TransitionClass(2,1,kC)
     coag.H = (n::Matrix{Int64},Mom::Vector{Int64}) -> Mom[1]*(Mom[1]-1)/2
@@ -10,10 +18,15 @@ function ConceptFigure()
     coag.pi = (yc::Vector{Vector{Int64}}, xc::Vector{Vector{Int64}}) -> for d=1:length(yc[1]) yc[1][d] = xc[1][d] + xc[2][d] end
 
     biconv=new_chemical_reaction_class([-2;1],kr)
-    biconv.H = (n::Matrix{Int64},Mom::Vector{Int64}) -> (Mom[3]-Mom[2])/2
+    biconv.H = (n::Matrix{Int64},Mom::Vector{Int64}) -> (Mom[4]-Mom[2])/2
     biconv.g = xc::Vector{Vector{Int64}} -> xc[1][1]*(xc[1][1]-1)/2
 
-    add_transition_class(S,coag,biconv)
+    death=new_chemical_reaction_class([0;-1],kd)
+    death.H = (n::Matrix{Int64},Mom::Vector{Int64}) -> Mom[3]
+    death.g = xc::Vector{Vector{Int64}} -> xc[1][2]
+    death.fast_sample_reactants! = fast_sample_mass_2
+
+    add_transition_class(S,intake,coag,biconv,death)
     return S
 end
 
@@ -105,7 +118,7 @@ end
 function CellCommunity()
     S=System("CellCommunity",2,Dict(1=>[0,0],2=>[1,0],3=>[0,1]))
     kcom = 0.01
-    kbG, kdG, kS, kbS, kdS = 0.01, 0.1, 1.0, 0.1, 0.05
+    kbG, kdG, kS, kbS, kdS = 0.01, 0.1, 1.0, 0.0, 0.05
 
     comm=TransitionClass(2,2,kcom)
     comm.H = (n::Matrix{Int64},Mom::Vector{Int64}) -> Mom[2]*(Mom[1]-Mom[2])

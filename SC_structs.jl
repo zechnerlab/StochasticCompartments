@@ -21,8 +21,16 @@ mutable struct TransitionClass
     end
 end
 
+function Base.show(io::IO, c::TransitionClass)
+    c.rc == 0 ? print(io,"0 ") : (c.rc == 1 ? print(io,"[] ") : print(io,"[] + [] ") )
+    print("--> ")
+    c.pc == 0 ? print(io,"0 ") : (c.pc == 1 ? print(io,"[] ") : print(io,"[] + [] ") )
+    print(io,"k=",c.k)
+    c.parameters != nothing ? print(io, "  ",c.parameters) : nothing
+end
+
 # shortcut definition for one-compartment chemical reaction
-## change_vector is the integer update vector of the chemical species 
+## change_vector is the integer update vector of the chemical species
 function new_chemical_reaction_class(change_vector::Vector{Int64}, rate::Float64)
     class=TransitionClass(1,1,rate)
     class.parameters = change_vector
@@ -43,8 +51,8 @@ end
 mutable struct System
     name::String
     n_species::Int64                                  # Number of chemical species
-    transition_classes::Vector{TransitionClass}       # Defining model dynamics (as used in SSA simulations)
-    MomDict::Dict{Int64,Vector{Int64}}                # link moment index to its exponents
+    c::Vector{TransitionClass}                        # Defining model dynamics (as used in SSA simulations)
+    MomDict::Dict{Int64,Vector{Int64}}                # link moment index to its gamma exponents
     moment_equations::Union{Function,Nothing}         # Moment Equations f(dM,M,S,t)
     init_moments::Union{Function,Nothing}             # Based on implementation of Moment Equations
     function System(name::String, n_species::Int64,MomDict::Dict{Int64,Vector{Int64}})
@@ -56,10 +64,19 @@ mutable struct System
     end
 end
 
+function Base.show(io::IO, S::System)
+    println(S.name)
+    println("D = ",S.n_species)
+    println(length(S.c)," transition classes:")
+    for c=1:length(S.c)
+        println(S.c[c])
+    end
+end
+
 # adds some transition classes to a System object S
 function add_transition_class(S::System,c...)
     @assert prod(map(class -> typeof(class) == TransitionClass, c))
-    S.transition_classes = [S.transition_classes; c...]
+    S.c = [S.c; c...]
 end
 
 # computes moments of population state n as given by the index -> exponents dictionary in the system S
@@ -76,11 +93,12 @@ end
 return M
 end
 
+
 # check that initial condition matches the system
 function assert_model(S::System,n0::Matrix{Int64})
     @assert size(n0,1) == S.n_species "Initial condition doesn't match the model dimensionality"
     Mom0=compute_moments(S,n0)
-    for c in S.transition_classes
+    for c in S.c
 	c.H == nothing ? error("Incomplete transition class: specify the class propensity function 'H' ") : nothing
         try
             c.H(n0,Mom0)
