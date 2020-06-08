@@ -1,19 +1,19 @@
 
 # Concept Figure
 
-function Figure_1(;rg_seed=5517)
-seed!=nothing ? Random.seed!(seed) : nothing
+function Figure_1(;seed=5517)
+seed != nothing ? Random.seed!(seed) : seed=rand(1:10^6)
 S=ConceptExample()
 figure_size=(2.2,2)
 N0=5
 n0=zeros(Int64,2,N0)
-Random.seed!(rg_seed)
+Random.seed!(seed)
 for i=1:N0
 	n0[1,i]=rand(Poisson(5))
 end
 xmax=15
 ymax=12
-Random.seed!(rg_seed)
+Random.seed!(seed)
 n_story,m=StochasticCompartments.SSA(S,n0,[0.;25.0;50.0],full_story=true)
 for t=1:3
 	figure(t,figsize=figure_size)
@@ -23,7 +23,7 @@ for t=1:3
     yticks([0,5,10])
 end
 figure(1); legend(loc="center right")
-Random.seed!(rg_seed)
+Random.seed!(seed)
 n_story,t,m=StochasticCompartments.SSA(S,n0,50.0,full_story=true)
 figure("compartment number",figsize=(6.5,3))
 plot(t,m[1,:],drawstyle="steps-post",color="k")

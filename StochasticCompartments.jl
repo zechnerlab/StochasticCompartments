@@ -5,6 +5,8 @@ using Distributions
 using PyPlot
 using StatsBase
 using Random
+using SpecialFunctions
+using HypergeometricFunctions
 
 include("SC_structs.jl")
 include("SC_models.jl")
@@ -15,9 +17,9 @@ include("SC_figures.jl")
 export System, TransitionClass
 export add_transition_class, new_chemical_reaction_class
 export SSA, solve_moment_equations
-export figure_1, figure_birthdeath, figure_SI1
-export figure_coagulationfragmentation
-export figure_cellcommunication, figure_cellactivation
-export figure_stemcellstart, figure_stemcelldynamics, figure_stemcellparameters, figure_stemcellperturbation
+export Figure_1
+export Figure_2BC, Figure_2EF
+export Figure_3B, Figure_3C, Figure_3C_inset, Figure_3E, Figure_3F, Figure_3G, Figure_3H
+export Figure_S1, Figure_S3
 
 end  # END MODULE
