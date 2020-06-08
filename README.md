@@ -34,7 +34,7 @@ figure_3F()                        # for Fig. 3F (stem cell moment dynamics)
 figure_3G()                        # for figures 3G and S.4 (stem cell steady state)
 figure_3H()                        # for figure 3H (stem cell perturbation)
 ```
-Note that some of figures show the output of single stochastic realizations, but the random number generator is reset always to the same condition to ensure perfect reproducibility. In order to obtain different random realizations, it is sufficient to pass the keyword `seed = nothing`, for instance `figure_stemcellperturbation(seed=nothing)` .
+Note that some of figures show the output of single stochastic realizations, but the random number generator is reset always to the same condition to ensure perfect reproducibility. In order to obtain different random realizations, it is sufficient to pass the keyword `seed = nothing`, for instance `Figure_1(seed=nothing)` .
 
 # Advanced usage
 
@@ -51,7 +51,7 @@ The user can define a model through a variable of type 'System', which comprises
     moment_equations::Union{Function,Nothing}         # Moment Equations f(dM,M,S,t)
     init_moments::Union{Function,Nothing}             # Based on implementation of Moment Equations
 ```
-Note that the fields `moment_equations` and `init_moments` have to be implemented manually (for instance, as shown in the file SC_momentODEs.jl). The population dynamics is specified by the content of `transition_classes`, whose implementation is related to that of `MomDict`. The latter is a dictionary that links some integer indices to some integer exponent vectors of length `n_species`. This allows the user to declare which moments the simulator needs to track to perform the simulation and/or that are desired in output. 
+Note that the fields `moment_equations` and `init_moments` have to be implemented manually (for instance, as shown in the file SC_momentODEs.jl). The population dynamics is specified by the vector `c` of transition classes, whose implementation is related to that of `MomDict`. The latter is a dictionary that links some integer indices to some integer exponent vectors of length `n_species`. This allows the user to declare which moments the simulator needs to track to perform the simulation and/or that are desired in output. 
  
 For instance, let's initialize a new model named `MyModel` comprising e.g. 2 chemical species. Let's assume that we are interested in following the dynamics of the total number of compartments (i.e. exponents `[0,0]`), the masses of species 1 and 2 (i.e. `[1,0]` and `[0,1]`) and their crossmoment `[1,1]`. We can assign these model settings to the variable 'S' as follows
 ```julia
