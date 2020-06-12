@@ -9,7 +9,7 @@ For further information, contact Lorenzo Duso (duso@mpi-cbg.de) & Christoph Zech
 
 # Installation and requirements
 
-Julia version greater or equal than 1.1 and the packages Random, Distributions, StatsBase, PyPlot and DifferentialEquations are required. 
+Julia version greater or equal than 1.1 and the packages Distributions, PyPlot, DifferentialEquations, StatsBase, Random, SpecialFunctions and HypergeometricFunctions are required. 
 
 
 # Reproducing the figures of the paper
@@ -80,7 +80,7 @@ Next, for each transition class it is necessary to declare:
 3) the outcome distribution, with arguments  `(yc::Vector{Vector{Int64}}, xc::Vector{Vector{Int64}})` or `(yc::Vector{Vector{Int64}}, xc::Vector{Vector{Int64}}, param::Float64)`
 where the integer matrix `n` has `n_species` rows and stores the state of the system by associating each compartment with one of its columns.
 
-A customized function is provided to facilitate the declaration of transition classes associated with single-compartment chemical reactions. A chemical event with state-change vector `change_vector::Vector{Int64}` of length `n_species` and rate constant 'k::Float64' is initialized by
+A customized function is provided to facilitate the declaration of transition classes associated with single-compartment chemical reactions. A chemical event with state-change vector `change_vector::Vector{Int64}` of length `n_species` and rate constant `k::Float64` is initialized by
 ```julia
 MyChemicalClass = new_chemical_reaction_class(change_vector, k)
 ```
