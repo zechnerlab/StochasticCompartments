@@ -21,18 +21,18 @@ using .StochasticCompartments
 ```
 The following functions are dedicated to reproduce the corresponding figures of the paper: 
 ```julia
-Figure_1()                         # for the panels of the concept figure (Fig. 1)
-Figure_2BC()                       # for figures 2B and 2C (nested birth-death model)
-Figure_S1()                        # for figure S.1
-Figure_2EF()                       # for figures 2E, 2F and S.2 (coagulation-fragmentation case study)
-Figure_3B()                        # for figures 3B and S.3 (dynamics of the protein expression)
-Figure_3C()                        # for Fig. 3C  (variance-to-mean ratio of protein distribution)
+Figure_1()                         # for the panels of Fig. 1 (concept figure)
+Figure_2BC()                       # for Figs. 2B and 2C (nested birth-death model)
+Figure_S1()                        # for Fig. S.1
+Figure_2EF()                       # for Figs. 2E, 2F and S.2 (coagulation-fragmentation case study)
+Figure_3B()                        # for Figs. 3B and S.3 (dynamics of the protein expression)
+Figure_3C()                        # for Figs. 3C and and S.3  (variance-to-mean ratio)
 Figure_3C_inset()                  # for the inset of Fig. 3C (steady-state protein distributions)
 Figure_3E()                        # for Fig. 3E (stem cell lineage realization)
-Figure_S4()                        # for Fig. S3 (division time distribution)
+Figure_S4()                        # for Fig. S4 (division time distribution)
 Figure_3F()                        # for Fig. 3F (stem cell moment dynamics)
-Figure_3G()                        # for figures 3G and S.5 (stem cell steady state)
-Figure_3H()                        # for figure 3H (stem cell perturbation)
+Figure_3G()                        # for Figs. 3G and S.5 (stem cell steady state)
+Figure_3H()                        # for Fig. 3H (stem cell perturbation)
 ```
 Note that some of figures show the output of single stochastic realizations, but the random number generator is reset always to the same condition to ensure perfect reproducibility. In order to obtain different random realizations, it is sufficient to pass the keyword `seed = nothing`, for instance `Figure_1(seed=nothing)` .
 
