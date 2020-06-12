@@ -29,9 +29,9 @@ Figure_3B()                        # for figures 3B and S.3 (dynamics of the pro
 Figure_3C()                        # for Fig. 3C  (variance-to-mean ratio of protein distribution)
 Figure_3C_inset()                  # for the inset of Fig. 3C (steady-state protein distributions)
 Figure_3E()                        # for Fig. 3E (stem cell lineage realization)
-Figure_S3()                        # for Fig. S3 (division time distribution)
+Figure_S4()                        # for Fig. S3 (division time distribution)
 Figure_3F()                        # for Fig. 3F (stem cell moment dynamics)
-Figure_3G()                        # for figures 3G and S.4 (stem cell steady state)
+Figure_3G()                        # for figures 3G and S.5 (stem cell steady state)
 Figure_3H()                        # for figure 3H (stem cell perturbation)
 ```
 Note that some of figures show the output of single stochastic realizations, but the random number generator is reset always to the same condition to ensure perfect reproducibility. In order to obtain different random realizations, it is sufficient to pass the keyword `seed = nothing`, for instance `Figure_1(seed=nothing)` .
