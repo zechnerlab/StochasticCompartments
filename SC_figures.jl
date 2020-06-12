@@ -458,8 +458,7 @@ end
 
 
 
-function Figure_S3(; kb=10.,kF=0.01,t=collect(0:0.1:15),Nsamples=1000000,seed::Union{Nothing,Int64}=nothing)
-seed!=nothing ? Random.seed!(seed) : nothing
+function Figure_S4(; kb=10.,kF=0.01,t=collect(0:0.1:15),Nsamples=1000000)
 taus=zeros(Nsamples)
 for i=1:Nsamples
 	time=0.
