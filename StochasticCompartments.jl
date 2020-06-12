@@ -18,8 +18,8 @@ export System, TransitionClass
 export add_transition_class, new_chemical_reaction_class
 export SSA, solve_moment_equations
 export Figure_1
-export Figure_2BC, Figure_2EF
-export Figure_3B, Figure_3C, Figure_3C_inset, Figure_3E, Figure_3F, Figure_3G, Figure_3H
-export Figure_S1, Figure_S3
+export Figure_2BC, Figure_2EF, Figure_S1
+export Figure_3B, Figure_3C, Figure_3C_inset
+export Figure_3E, Figure_3F, Figure_3G, Figure_3H, Figure_S4
 
 end  # END MODULE
