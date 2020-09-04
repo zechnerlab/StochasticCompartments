@@ -2,7 +2,7 @@
 
 Julia code to perform stochastic simulations and solve moment equations for stochastic models of interacting biochemical compartments. 
 
-The provided code reproduces the case studies shown in the paper "Stochastic reaction networks in dynamic compartment populations" (https://arxiv.org/abs/2002.00931) and can be also used to implement further models, upon minor coding efforts.
+The provided code reproduces the case studies shown in the paper "Stochastic reaction networks in dynamic compartment populations" (https://www.pnas.org/content/early/2020/08/28/2003734117 and preprint version https://arxiv.org/abs/2002.00931). The code permits to define and study other models too, upon some minor implementation efforts.
 
 For further information, contact Lorenzo Duso (duso@mpi-cbg.de) & Christoph Zechner (zechner@mpi-cbg.de)
 
